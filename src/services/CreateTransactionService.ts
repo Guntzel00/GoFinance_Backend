@@ -29,28 +29,25 @@ class CreateTransactionService {
     }
 
     let checkCategoryExists = await categoriesRepository.findOne({
-      where: { title: categoryTitle },
+      where: {
+        title: categoryTitle,
+      },
     });
 
     if (!checkCategoryExists) {
       const newCategory = categoriesRepository.create({
-        title,
+        title: categoryTitle,
       });
 
-      checkCategoryExists = newCategory;
-
       await categoriesRepository.save(newCategory);
+      checkCategoryExists = newCategory;
     }
-
-    // const category = await categoriesRepository.findOne({
-    //   where: { title: categoryTitle },
-    // });
 
     const transaction = transactionsRepository.create({
       title,
       value,
       type,
-      category_id: checkCategoryExists.id,
+      category: checkCategoryExists,
     });
 
     await transactionsRepository.save(transaction);
