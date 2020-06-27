@@ -8,7 +8,7 @@ interface Request {
   title: string;
   value: number;
   type: 'income' | 'outcome';
-  categoryTitle: string;
+  category: string;
 }
 
 class CreateTransactionService {
@@ -16,7 +16,7 @@ class CreateTransactionService {
     title,
     value,
     type,
-    categoryTitle,
+    category,
   }: Request): Promise<Transaction> {
     const transactionsRepository = getCustomRepository(TransactionsRepository);
     const categoriesRepository = getRepository(Category);
@@ -30,13 +30,13 @@ class CreateTransactionService {
 
     let checkCategoryExists = await categoriesRepository.findOne({
       where: {
-        title: categoryTitle,
+        title: category,
       },
     });
 
     if (!checkCategoryExists) {
       const newCategory = categoriesRepository.create({
-        title: categoryTitle,
+        title: category,
       });
 
       await categoriesRepository.save(newCategory);
